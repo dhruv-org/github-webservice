@@ -14,6 +14,7 @@
 
 # [START gae_python37_render_template]
 import datetime
+from modules.fibs import *
 
 from flask import Flask, render_template
 
@@ -24,12 +25,16 @@ app = Flask(__name__)
 def root():
     # For the sake of example, use static information to inflate the template.
     # This will be replaced with real information in later steps.
+    #modules.fibs.fib(1000)
+    data=fib2(1000)
+    print(data)
+
     dummy_times = [datetime.datetime(2018, 1, 1, 10, 0, 0),
                    datetime.datetime(2018, 1, 2, 10, 30, 0),
                    datetime.datetime(2018, 1, 3, 11, 0, 0),
                    ]
 
-    return render_template('index.html', times=dummy_times)
+    return render_template('index.html', times=dummy_times,datas=data)
 
 @app.route('/dhruv_index.html')
 def dhruv_root():
