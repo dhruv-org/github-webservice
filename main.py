@@ -31,6 +31,10 @@ def root():
 
     return render_template('index.html', times=dummy_times)
 
+@app.route('/dhruv_index.html')
+def dhruv_root():
+    return render_template('dhruv_index.html')
+
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
