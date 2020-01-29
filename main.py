@@ -20,6 +20,10 @@ from modules.fibs import *
 import logging
 from flask import request
 import json
+#from hmac import HMAC, compare_digest
+#from hashlib import sha1
+#import hmac
+
 
 
 from flask import Flask, render_template
@@ -29,6 +33,21 @@ logging.getLogger().setLevel(logging.INFO)
 
 app = Flask(__name__)
 
+'''
+def verify_signature(data):
+    #payload = pickle.dumps(request.DATA)
+    received_sign = request.headers.get('X-Hub-Signature').split('sha1=')[-1].strip()
+    print(received_sign)
+    secret="ptmihemlzj33437717506640382".encode()
+    #signature = hmac.new(APP_KEY, request, hashlib.sha1).hexdigest()
+    #expected_sign = HMAC(key=secret, msg=data, digestmod=sha1).hexdigest()
+    expected_sign = 'sha1=' + hmac.new(secret, data, sha1).hexdigest()
+    #signature = hmac.new(APP_KEY, payload, hashlib.sha1).hexdigest()
+    if compare_digest(received_sign, expected_sign):
+        return True
+    else:
+        return False
+'''
 
 @app.route('/')
 def root():
@@ -52,11 +71,13 @@ def root():
 def github_webhook():
     if request.method == 'POST':
         data = request.get_json()
+        #valid=verify_signature(data)
         logging.info("*************Text debug***********")
         logging.info(json.dumps(data))
         #logging.info("Text debug" + str(data))
         logging.info("*************Text debug***********")
-        return render_template('dhruv_index.html')
+        return render_template('github_webhook.html')
+
     logging.info("Text info")
     logging.debug("Text debug")
     logging.warning("Text warning")
