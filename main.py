@@ -17,8 +17,15 @@
 import datetime
 from github import Github
 from modules.fibs import *
+import logging
+from flask import request
+import json
+
 
 from flask import Flask, render_template
+
+import logging
+logging.getLogger().setLevel(logging.INFO)
 
 app = Flask(__name__)
 
@@ -41,10 +48,25 @@ def root():
 
     return render_template('index.html', times=dummy_times,datas=repo[0])
 
+@app.route('/ghwebhook', methods=['GET', 'POST'])
+def github_webhook():
+    if request.method == 'POST':
+        data = request.get_json()
+        logging.info("*************Text debug***********")
+        logging.info(json.dumps(data))
+        #logging.info("Text debug" + str(data))
+        logging.info("*************Text debug***********")
+        return render_template('dhruv_index.html')
+    logging.info("Text info")
+    logging.debug("Text debug")
+    logging.warning("Text warning")
+    logging.error("Text error")
+    logging.critical("Text critical")
+    return render_template('github_webhook.html')
+
 @app.route('/dhruv_index.html')
 def dhruv_root():
     return render_template('dhruv_index.html')
-
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
