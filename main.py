@@ -14,6 +14,7 @@
 
 # [START gae_python37_render_template]
 import datetime
+from github import Github
 from modules.fibs import *
 
 from flask import Flask, render_template
@@ -29,12 +30,15 @@ def root():
     data=fib2(1000)
     print(data)
 
+    g = Github("5e7b1d6424b422b7a4cedc433437717506640382")
+    repo = g.get_user().get_repos()
+
     dummy_times = [datetime.datetime(2018, 1, 1, 10, 0, 0),
                    datetime.datetime(2018, 1, 2, 10, 30, 0),
                    datetime.datetime(2018, 1, 3, 11, 0, 0),
                    ]
 
-    return render_template('index.html', times=dummy_times,datas=data)
+    return render_template('index.html', times=dummy_times,datas=repo[0])
 
 @app.route('/dhruv_index.html')
 def dhruv_root():
