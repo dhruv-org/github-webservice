@@ -33,6 +33,8 @@ logging.getLogger().setLevel(logging.INFO)
 
 app = Flask(__name__)
 
+gh = Github("5e7b1d6424b422b7a4cedc433437717506640382")
+
 '''
 def verify_signature(data):
     #payload = pickle.dumps(request.DATA)
@@ -57,8 +59,8 @@ def root():
     data=fib2(1000)
     print(data)
 
-    g = Github("5e7b1d6424b422b7a4cedc433437717506640382")
-    repo = g.get_user().get_repos()
+    
+    repo = gh.get_user().get_repos()
 
     dummy_times = [datetime.datetime(2018, 1, 1, 10, 0, 0),
                    datetime.datetime(2018, 1, 2, 10, 30, 0),
@@ -72,18 +74,83 @@ def github_webhook():
     if request.method == 'POST':
         data = request.get_json()
         #valid=verify_signature(data)
-        logging.info("*************Text debug***********")
+        logging.info("*************Text debug-Json-dump***********")
         logging.info(json.dumps(data))
-        #logging.info("Text debug" + str(data))
-        logging.info("*************Text debug***********")
-        return render_template('github_webhook.html')
+        logging.info("*************Text debug-Json-dump***********")
+        logging.info(('action' in data and 'pull_request' in data) and (data['action'] == "opened"))
+        output = False
 
+        if ('before' in data and 'created' in data) and (data['before'] == "0000000000000000000000000000000000000000" and data['created'] == True):
+            repo_full_name = data['repository']['full_name']
+            creator_name = data['sender']['login'] 
+            logging.info("*************Text debug-Create-Branch-Restriction***********")
+            output = "Repo-Created-URL: " + repo_full_name + " ; Owner: " + creator_name
+            logging.info(output)
+            branch = gh.get_repo(repo_full_name).get_branch("master")
+            branch.edit_protection(user_push_restrictions=[creator_name])
+            logging.info("*************Text debug-Create-Branch-Restriction***********")
+
+        if ('action' in data and 'pull_request' in data) and (data['action'] == "opened"):
+            repo_full_name = data['repository']['full_name']
+            creator_name = data['sender']['login'] 
+            #creator_name = "dhruv-gupta-live"
+            #creator_name = "dhruv-instart"
+            org = data['organization']['login']
+            user = gh.get_user(creator_name)
+            branch = gh.get_repo(repo_full_name).get_branch("master")
+            membership = user.get_organization_membership(org)
+            branch_users = branch.get_user_push_restrictions()
+            push_restriction_active = False
+            try:
+                logging.info(branch_users[0])
+                push_restriction_active = True
+            except Exception as err:
+                logging.info("push_restriction_active: " + str(push_restriction_active))
+
+            user_access = False
+            org_admin = False
+
+            logging.info("*************Text debug-PullRequest-IssueCreation***********")
+            output = "PullRequest-Created: " + repo_full_name + " ; Owner: " + creator_name
+            logging.info(output)
+            logging.info("*************Text debug-PullRequest-IssueCreation***********")
+
+            if membership.state == 'active' and membership.role != 'admin':
+                output = creator_name + " : OrgMembership: Not Admin"
+                logging.info(output)
+                if push_restriction_active == True:
+                    for buser in branch_users:
+                        logging.info(buser)
+                        if buser.login == creator_name:
+                            user_access = True
+                            break
+                    logging.info(creator_name + " Repo Access : " + str(user_access))
+                
+            elif membership.state == 'active' and membership.role == 'admin':
+                output = creator_name + " : OrgMembership: Admin"
+                org_admin = True
+            
+
+            if org_admin == False:
+                if user_access == True:
+                    output = creator_name + " : OrgMembership: Not Admin: RepoAccess: Granted"
+                elif user_access == False:
+                    output = creator_name + " : OrgMembership: Not Admin: RepoAccess: Not Granted: Create Issue"
+
+            logging.info(output)
+
+        return render_template('github_webhook.html',data=output)
+
+    return render_template('github_webhook.html',"GET Request")
+
+"""
     logging.info("Text info")
     logging.debug("Text debug")
     logging.warning("Text warning")
     logging.error("Text error")
     logging.critical("Text critical")
-    return render_template('github_webhook.html')
+"""
+    
 
 @app.route('/dhruv_index.html')
 def dhruv_root():
