@@ -105,7 +105,7 @@ def github_webhook():
             repo_owner = False
             org_owner = 'dhruvg20'
             try:
-                repo_owner = branch_users[0]
+                repo_owner = branch_users[0].login
                 push_restriction_active = True
             except Exception as err:
                 logging.info("push_restriction_active: " + str(push_restriction_active))
