@@ -97,12 +97,15 @@ def github_webhook():
             #creator_name = "dhruv-instart"
             org = data['organization']['login']
             user = gh.get_user(creator_name)
-            branch = gh.get_repo(repo_full_name).get_branch("master")
+            repo = gh.get_repo(repo_full_name)
+            branch = repo.get_branch("master")
             membership = user.get_organization_membership(org)
             branch_users = branch.get_user_push_restrictions()
             push_restriction_active = False
+            repo_owner = False
+            org_owner = 'dhruvg20'
             try:
-                logging.info(branch_users[0])
+                repo_owner = branch_users[0]
                 push_restriction_active = True
             except Exception as err:
                 logging.info("push_restriction_active: " + str(push_restriction_active))
@@ -136,8 +139,25 @@ def github_webhook():
                     output = creator_name + " : OrgMembership: Not Admin: RepoAccess: Granted"
                 elif user_access == False:
                     output = creator_name + " : OrgMembership: Not Admin: RepoAccess: Not Granted: Create Issue"
-
+                    #label = repo.get_label("My Label")
+                    #repo.create_issue(title="This is a new issue", labels=[label], body="This is the issue body @dhruvg20")
+                    title = "Branch Restriction - repo:" + repo_full_name + " - member:" + creator_name
+                    if repo_owner == False:
+                        body = '''
+Attention: @{org_owner}, @{creator_name}
+Repository: {repo_full_name}
+There is branch restriction setup, such that only the creator or adminstrator has push permission.
+                        '''.format(org_owner=org_owner,creator_name=creator_name,repo_full_name=repo_full_name)
+                    else:
+                        body = '''
+Attention: @{repo_owner}, @{org_owner}, @{creator_name}
+Repository: {repo_full_name}
+There is branch restriction setup, such that only the creator or adminstrator has push permission.
+                        '''.format(repo_owner=repo_owner,org_owner=org_owner,creator_name=creator_name,repo_full_name=repo_full_name)
+                    repo.create_issue(title=title, body=body)                    
             logging.info(output)
+            logging.info("Issue-Title:"+title)
+            logging.info("Issue-Body:"+body)
 
         return render_template('github_webhook.html',data=output)
 
