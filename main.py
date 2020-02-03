@@ -20,11 +20,7 @@ from modules.fibs import *
 import logging
 from flask import request
 import json
-#from hmac import HMAC, compare_digest
-#from hashlib import sha1
-#import hmac
-
-
+from google.cloud import datastore
 
 from flask import Flask, render_template
 
@@ -33,26 +29,43 @@ logging.getLogger().setLevel(logging.INFO)
 
 app = Flask(__name__)
 
-gh = Github("5e7b1d6424b422b7a4cedc433437717506640382")
+datastore_client = datastore.Client()
 
-'''
-def verify_signature(data):
-    #payload = pickle.dumps(request.DATA)
-    received_sign = request.headers.get('X-Hub-Signature').split('sha1=')[-1].strip()
-    print(received_sign)
-    secret="ptmihemlzj33437717506640382".encode()
-    #signature = hmac.new(APP_KEY, request, hashlib.sha1).hexdigest()
-    #expected_sign = HMAC(key=secret, msg=data, digestmod=sha1).hexdigest()
-    expected_sign = 'sha1=' + hmac.new(secret, data, sha1).hexdigest()
-    #signature = hmac.new(APP_KEY, payload, hashlib.sha1).hexdigest()
-    if compare_digest(received_sign, expected_sign):
-        return True
-    else:
-        return False
-'''
+def store_time(dt):
+    entity = datastore.Entity(key=datastore_client.key('visit'))
+    entity.update({
+        'timestamp': dt
+    })
+
+    datastore_client.put(entity)
+
+
+def fetch_times(limit):
+    query = datastore_client.query(kind='visit')
+    query.order = ['-timestamp']
+
+    times = query.fetch(limit=limit)
+
+    return times
+
+
+
+query = datastore_client.query(kind='github')
+data = list(query.fetch())
+git_accesskey = data[0]['secretkey']
+git_webhook_secret = data[1]['secretkey']
+gh = Github(git_accesskey)
+
+def debug_keys():
+    debug = request.args.get('debug')
+    if debug == "true":
+        logging.info("git_accesskey:"+git_accesskey)
+        logging.info("git_webhook_secret:"+git_webhook_secret)
+
 
 @app.route('/')
 def root():
+    debug_keys()
     # For the sake of example, use static information to inflate the template.
     # This will be replaced with real information in later steps.
     #modules.fibs.fib(1000)
@@ -71,9 +84,9 @@ def root():
 
 @app.route('/ghwebhook', methods=['GET', 'POST'])
 def github_webhook():
+    debug_keys()
     if request.method == 'POST':
         data = request.get_json()
-        #valid=verify_signature(data)
         logging.info("*************Text debug-Json-dump***********")
         logging.info(json.dumps(data))
         logging.info("*************Text debug-Json-dump***********")
@@ -148,6 +161,12 @@ Attention: @{org_owner}, @{creator_name}
 Repository: {repo_full_name}
 There is branch restriction setup, such that only the creator or adminstrator has push permission.
                         '''.format(org_owner=org_owner,creator_name=creator_name,repo_full_name=repo_full_name)
+                    elif repo_owner == org_owner:
+                        body = '''
+Attention: @{repo_owner}, @{creator_name}
+Repository: {repo_full_name}
+There is branch restriction setup, such that only the creator or adminstrator has push permission.
+                        '''.format(repo_owner=repo_owner,creator_name=creator_name,repo_full_name=repo_full_name)
                     else:
                         body = '''
 Attention: @{repo_owner}, @{org_owner}, @{creator_name}
@@ -161,20 +180,24 @@ There is branch restriction setup, such that only the creator or adminstrator ha
 
         return render_template('github_webhook.html',data=output)
 
-    return render_template('github_webhook.html',"GET Request")
-
-"""
-    logging.info("Text info")
-    logging.debug("Text debug")
-    logging.warning("Text warning")
-    logging.error("Text error")
-    logging.critical("Text critical")
-"""
+    return render_template('github_webhook.html',data="GET Request")
     
-
 @app.route('/dhruv_index.html')
 def dhruv_root():
+    debug_keys()
     return render_template('dhruv_index.html')
+
+@app.route('/accesslist.html')
+def accesslist():
+    debug_keys()
+    # Store the current access time in Datastore.
+    store_time(datetime.datetime.now())
+
+    # Fetch the most recent 10 access times from Datastore.
+    times = fetch_times(10)
+
+    return render_template(
+        'accesslist.html', times=times)
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
