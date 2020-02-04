@@ -47,4 +47,4 @@ Following Branch Protection or Issue creation rules are setup on the Organizatio
 
 ## Github Python Usage:
 
-*
+* Test
