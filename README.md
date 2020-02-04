@@ -8,7 +8,7 @@ This is a example setup for running a Web Service on Google App Engine, which ge
     * Datastore
 * Python3
 * Flask
-* PyGithub
+* [PyGithub](https://pygithub.readthedocs.io/en/latest/introduction.html)
 * GitHub Access Token
 
 ## Setup
