@@ -58,7 +58,7 @@ Try to create a new file and push to the Master Branch, and you would see the Br
 ![GitHub Repo Add New File](/images/Org-Github-Repo-Add_New_File.png)
 
 Along with the above, a issue would be logged which mentioning why the push failed and with mentioning the Admin, Push Creater and Repo Creator:
-![GitHub Repo Issue Creation](/images/Org-GitHub-Repo-Issue_Created)
+![GitHub Repo Issue Creation](/images/Org-GitHub-Repo-Issue_Created.png)
 
 ## Troubleshooting:
 
