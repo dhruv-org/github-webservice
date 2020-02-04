@@ -118,10 +118,13 @@ def github_webhook():
             repo_owner = False
             org_owner = False
 
-            org_members = org.get_members()
+
+            organization = gh.get_organization(org)
+            org_members = organization.get_members()
+
 
             for org_member in org_members:
-                org_membership = org_member.get_organization_membership(org)
+                org_membership = org_member.get_organization_membership(organization)
                 if org_membership.state == 'active' and org_membership.role == 'admin':
                     org_owner = org_member.login
                     break
