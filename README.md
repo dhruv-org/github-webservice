@@ -45,6 +45,12 @@ Following Branch Protection or Issue creation rules are setup on the Organizatio
 
 ## Troubleshooting:
 
+![Google Cloud Logging](/images/Google_Cloud_Logging.png)
+
+![Google App Engine Local Debugging](/images/Google_App_Engine-Local_System-Debugging.png)
+
+![GitHub Organization Webhook Debugging](/images/GitHub-Webhook-Requests.png)
+
 ## Github Python Usage:
 
-* Test
+* 
