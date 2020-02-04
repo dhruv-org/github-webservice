@@ -18,7 +18,9 @@ This is a example setup for running a Web Service on Google App Engine, which ge
 4. Once you have the above setup ready, once review the [Building a Python App on App Engine](https://cloud.google.com/appengine/docs/standard/python3/building-app), to check if all the setup has been done correctly. 
 5. Clone this Repository to your system. 
 6. Create a GitHub access token with appropriate Access to invoke GitHub APIs and follow the steps mentioned on the GitHub Documentation: [Creating a personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
-7. Once you have the Access token created, we cannot save it in our Code as plain text, and thus we will leverage Google Cloud's Datastore storage and you can learn about how create an entity there by following steps in [Accessing your datastore content](https://cloud.google.com/datastore/docs/concepts/entities)
+![GitHub access token](/images/Token_Generation.png)
+7. Once you have the Access token created, we cannot save it in our Code as plain text, and thus we will leverage Google Cloud's Datastore storage and you can learn about how create an entity there by following steps in [Accessing your datastore content](https://cloud.google.com/datastore/docs/concepts/entities), as shown below
+![Google Cloud Datastore](/images/gCloud-Datastore.png)
 9. Once you have the GitHub Repository cloned on your System. 
 10. Make sure you have setup the GitHub Access Token(Setup Step 6) and saving it on the Google Cloud Datastore(Setup Step 7).
 11. Once you have the above step setup correcly, run testing on your local system by running the following:
@@ -43,12 +45,30 @@ Following Branch Protection or Issue creation rules are setup on the Organizatio
 
 ## Example Usage: 
 
+I have logged in as the Organization admin: dhruvg20, and created a "testrepo", as seen below:
+![GitHub Repo Creation](/images/Org-Github-Repo-Creation.png)
+
+This leads to a webhook to be called, which creates the Branch Restriction for the user: dhruvg20 only to have access to push to the master branch, as seen below:
+![GitHub Repo Branch Restriction](/images/Org-Github-Repo-Branch_Restrictioned.png)
+
+Now login as the user: dhruv-instart, as shown below:
+![GitHub Repo Login](/images/Org-GitHub-Login.png)
+
+Try to create a new file and push to the Master Branch, and you would see the Branch Restriction kicking in:
+![GitHub Repo Add New File](/images/Org-Github-Repo-Add_New_File.png)
+
+Along with the above, a issue would be logged which mentioning why the push failed and with mentioning the Admin, Push Creater and Repo Creator:
+![GitHub Repo Issue Creation](/images/Org-GitHub-Repo-Issue_Created)
+
 ## Troubleshooting:
 
+You can use Google Cloud's Logging Setup to examine logs:
 ![Google Cloud Logging](/images/Google_Cloud_Logging.png)
 
+You can use Google App Engine's Local testing setup to examine logs, as stated in Setup step 11:
 ![Google App Engine Local Debugging](/images/Google_App_Engine-Local_System-Debugging.png)
 
+You use Webhook request and response debugging by reviewing the GitHub documentation [Testing Webhooks](https://developer.github.com/webhooks/testing/)
 ![GitHub Organization Webhook Debugging](/images/GitHub-Webhook-Requests.png)
 
 ## Github Python Usage:
