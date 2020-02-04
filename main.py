@@ -116,7 +116,16 @@ def github_webhook():
             branch_users = branch.get_user_push_restrictions()
             push_restriction_active = False
             repo_owner = False
-            org_owner = 'dhruvg20'
+            org_owner = False
+
+            org_members = org.get_members()
+
+            for org_member in org_members:
+                org_membership = org_member.get_organization_membership(org)
+                if org_membership.state == 'active' and org_membership.role == 'admin':
+                    org_owner = org_member.login
+                    break
+
             try:
                 repo_owner = branch_users[0].login
                 push_restriction_active = True
