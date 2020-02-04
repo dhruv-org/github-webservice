@@ -46,31 +46,43 @@ Following Branch Protection or Issue creation rules are setup on the Organizatio
 ## Example Usage: 
 
 I have logged in as the Organization admin: dhruvg20, and created a "testrepo", as seen below:
+
 ![GitHub Repo Creation](/images/Org-Github-Repo-Creation.png)
 
 This leads to a webhook to be called, which creates the Branch Restriction for the user: dhruvg20 only to have access to push to the master branch, as seen below:
+
 ![GitHub Repo Branch Restriction](/images/Org-Github-Repo-Branch_Restrictioned.png)
 
 Now login as the user: dhruv-instart, as shown below:
+
 ![GitHub Repo Login](/images/Org-GitHub-Login.png)
 
 Try to create a new file and push to the Master Branch, and you would see the Branch Restriction kicking in:
+
 ![GitHub Repo Add New File](/images/Org-Github-Repo-Add_New_File.png)
 
 Along with the above, a issue would be logged which mentioning why the push failed and with mentioning the Admin, Push Creater and Repo Creator:
+
 ![GitHub Repo Issue Creation](/images/Org-GitHub-Repo-Issue_Created.png)
 
 ## Troubleshooting:
 
 You can use Google Cloud's Logging Setup to examine logs:
+
 ![Google Cloud Logging](/images/Google_Cloud_Logging.png)
 
 You can use Google App Engine's Local testing setup to examine logs, as stated in Setup step 11:
+
 ![Google App Engine Local Debugging](/images/Google_App_Engine-Local_System-Debugging.png)
 
 You use Webhook request and response debugging by reviewing the GitHub documentation [Testing Webhooks](https://developer.github.com/webhooks/testing/)
+
 ![GitHub Organization Webhook Debugging](/images/GitHub-Webhook-Requests.png)
 
 ## Github Python Usage:
 
-* 
+* Repository APIs - [API Details](http://developer.github.com/v3/repos/) | [PyGitHub](https://pygithub.readthedocs.io/en/latest/github_objects/Repository.html)
+* Organization APIs = [API Details](http://developer.github.com/v3/orgs/) | [PyGitHub](https://pygithub.readthedocs.io/en/latest/github_objects/Organization.html#organization)
+* MembershipAPIs - [API Details](http://developer.github.com/v3/orgs/) | [PyGitHub](https://pygithub.readthedocs.io/en/latest/github_objects/Membership.html)
+* Branch APIs - [API Details](https://developer.github.com/v3/repos/branches) | [PyGitHub](https://pygithub.readthedocs.io/en/latest/github_objects/Branch.html)
+* APIs - [API Details]() | [PyGitHub]()
