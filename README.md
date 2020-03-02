@@ -1,4 +1,4 @@
-# A GitHub Organization Events listens Web Service
+# A GitHub Organization Events listening Web Service
 
 This is a example setup for running a Web Service on Google App Engine, which gets invoked from GitHub Webhooks to maintains branches to be automatically protected upon creation and issue registered. 
 
