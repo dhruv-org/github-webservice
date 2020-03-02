@@ -23,7 +23,7 @@ This is a example setup for running a Web Service on Google App Engine, which ge
 ![Google Cloud Datastore](/images/gCloud-Datastore.png)
 9. Once you have the GitHub Repository cloned on your System. 
 10. Make sure you have setup the GitHub Access Token(Setup Step 6) and saving it on the Google Cloud Datastore(Setup Step 7).
-11. Once you have the above step setup correcly, run testing on your local system by running the following:
+11. Once you have the above step setup correctly, run testing on your local system by running the following:
 ```python3 main.py```
 This will run a webservice at [http://127.0.0.1:8080/](http://127.0.0.1:8080/) and you could check if everything is working correctly on the console's logging. 
 On the above link access you will see some testing templates to verify everything is working correctly. 
